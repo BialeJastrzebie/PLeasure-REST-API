@@ -1,2 +1,2 @@
-# P-easure
-A project assisting students in spending their free time.
+# recipe-app-api
+Recipe API Project
