@@ -1,2 +1,2 @@
-# PŁeasure
-App for students
+# recipe-app-api
+Recipe API Project

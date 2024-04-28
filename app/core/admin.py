@@ -44,3 +44,11 @@ class UserAdmin(BaseUserAdmin):
 
 
 admin.site.register(models.User, UserAdmin)
+admin.site.register(models.UserFriends)
+admin.site.register(models.Schedule)
+admin.site.register(models.Lesson)
+admin.site.register(models.Map)
+admin.site.register(models.Category)
+admin.site.register(models.Location)
+admin.site.register(models.Filter)
+admin.site.register(models.Coupon)

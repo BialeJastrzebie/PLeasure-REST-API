@@ -12,7 +12,7 @@ from core import models
 
 
 def create_user(email='user@example.com', password='testpass123'):
-    """Create and return new user"""
+    """create and return new user"""
     return get_user_model().objects.create_user(email, password)
 
 
@@ -55,7 +55,7 @@ class ModelTests(TestCase):
         self.assertTrue(user.is_staff)
 
     def test_create_recipe(self):
-        """test creating a recipe is successful"""
+        """test creating a Schedules is successful"""
         user = get_user_model().objects.create_user(
             'test@example.com',
             'testpass123',
@@ -65,7 +65,7 @@ class ModelTests(TestCase):
             title='Sample Recipie Name',
             time_minutes=5,
             price=Decimal('5.50'),
-            description='sample recipe description',
+            description='sample Schedules description',
         )
 
         self.assertEqual(str(recipe), recipe.title)
@@ -93,4 +93,4 @@ class ModelTests(TestCase):
         mock_uuid.return_value = uuid
         file_path = models.recipe_image_file_path(None, 'example.jpg')
 
-        self.assertEqual(file_path, f'uploads/recipe/{uuid}.jpg')
+        self.assertEqual(file_path, f'uploads/Schedules/{uuid}.jpg')
