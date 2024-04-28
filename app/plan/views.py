@@ -1,5 +1,5 @@
 """
-views for Schedules
+views for plan
 """
 from drf_spectacular.openapi import AutoSchema
 from drf_spectacular.utils import (
@@ -45,7 +45,6 @@ class ScheduleViewSet(viewsets.GenericViewSet,
         return self.serializer_class
 
 
-
 class LessonViewSet(viewsets.GenericViewSet,
                     mixins.ListModelMixin,
                     mixins.CreateModelMixin):
@@ -68,4 +67,3 @@ class LessonViewSet(viewsets.GenericViewSet,
         if self.action == 'retrieve':
             return serializers.LessonSerializer
         return self.serializer_class
-

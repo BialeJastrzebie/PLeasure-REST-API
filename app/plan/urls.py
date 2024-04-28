@@ -9,7 +9,7 @@ router = DefaultRouter()
 router.register('schedules', views.ScheduleViewSet)
 router.register('lessons', views.LessonViewSet)
 
-app_name = 'Schedules'
+app_name = 'plan'
 
 urlpatterns = [
     path('', include(router.urls)),

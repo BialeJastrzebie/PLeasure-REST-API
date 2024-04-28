@@ -45,9 +45,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Schedules',
     'user',
     'core',
+    'plan',
     'rest_framework',
     'rest_framework.authtoken',
     'drf_spectacular',
@@ -151,6 +151,10 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
+
 SPECTACULAR_SETTINGS = {
+    'TITLE': 'PŁEASURE API',
+    'DESCRIPTION': 'My API description',
+    'VERSION': '1.0.0',
     'COMPONENT_SPLIT_REQUEST': True,
 }

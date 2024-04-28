@@ -11,9 +11,9 @@ from . import models
 class UserAdmin(BaseUserAdmin):
     """Define the admin pages for users"""
     ordering = ['id']
-    list_display = ['email', 'name']
+    list_display = ['email']
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
+        (None, {'fields': ('email', 'password', 'first_name', 'last_name')}),
         (
             _('Permissions'),
             {

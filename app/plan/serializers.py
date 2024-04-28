@@ -1,5 +1,5 @@
 """
-serializers for Schedules APIs
+serializers for plan APIs
 """
 from rest_framework import serializers
 

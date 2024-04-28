@@ -12,11 +12,11 @@ from django.contrib.auth.models import (
 
 
 def recipe_image_file_path(instance, filename):
-    """generate file path for new Schedules image"""
+    """generate file path for new plan image"""
     ext = os.path.splitext(filename)[1]
     filename = f'{uuid.uuid4()}{ext}'
 
-    return os.path.join('uploads', 'Schedules', filename)
+    return os.path.join('uploads', 'plan', filename)
 
 
 def map_image_file_path(instance, filename):
