@@ -154,7 +154,7 @@ REST_FRAMEWORK = {
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'PŁEASURE API',
-    'DESCRIPTION': 'My API description',
-    'VERSION': '1.0.0',
+    'DESCRIPTION': 'Very good API for the PŁEASURE APP',
+    'VERSION': '1.2.3',
     'COMPONENT_SPLIT_REQUEST': True,
 }

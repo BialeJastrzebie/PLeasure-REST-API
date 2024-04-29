@@ -88,8 +88,7 @@ class Schedule(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
     )
-
-    lessons = models.ManyToManyField('Lesson')
+    lessons = models.ManyToManyField('Lesson', related_name='schedules')
 
     def __str__(self):
         return self.user.name
@@ -97,6 +96,7 @@ class Schedule(models.Model):
 
 class Lesson(models.Model):
     """Lesson object"""
+    schedule = models.ForeignKey('Schedule', on_delete=models.CASCADE)
     lesson_name = models.CharField(max_length=255)
     room = models.CharField(max_length=255)
     start_time = models.TimeField()

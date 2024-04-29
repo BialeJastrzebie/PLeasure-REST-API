@@ -8,6 +8,7 @@ from drf_spectacular.utils import (
     OpenApiParameter,
     OpenApiTypes,
 )
+
 from rest_framework import viewsets, mixins, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -25,8 +26,8 @@ class ScheduleViewSet(viewsets.GenericViewSet,
                       mixins.UpdateModelMixin,
                       mixins.DestroyModelMixin):
     """Manage schedules in the database"""
-    authentication_classes = TokenAuthentication
-    permission_classes = IsAuthenticated
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     queryset = Schedule.objects.all()
     serializer_class = serializers.ScheduleSerializer
 
@@ -47,16 +48,19 @@ class ScheduleViewSet(viewsets.GenericViewSet,
 
 class LessonViewSet(viewsets.GenericViewSet,
                     mixins.ListModelMixin,
-                    mixins.CreateModelMixin):
+                    mixins.CreateModelMixin,
+                    mixins.RetrieveModelMixin,
+                    mixins.UpdateModelMixin,
+                    mixins.DestroyModelMixin):
     """Manage lessons in the database"""
-    authentication_classes = TokenAuthentication
-    permission_classes = IsAuthenticated
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     queryset = Lesson.objects.all()
     serializer_class = serializers.LessonSerializer
 
     def get_queryset(self):
         """Return objects for the current authenticated user only"""
-        return self.queryset.filter(schedule__user=self.request.user)
+        return self.queryset.filter(schedule_user=self.request.user)
 
     def perform_create(self, serializer):
         """Create a new lesson"""
