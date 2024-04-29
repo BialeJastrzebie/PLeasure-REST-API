@@ -1,73 +1,106 @@
-from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.test import TestCase
+from django.urls import reverse
 
-from core import models
+from rest_framework import status
+from rest_framework.test import APIClient
+
+from core.models import Schedule
+
+from app.plan.serializers import ScheduleSerializer
+
+SCHEDULES_URL = reverse('schedule:schedule-list')
 
 
-def create_user(email='user@example.com', password='testpass123'):
-    """create and return new user"""
-    return get_user_model().objects.create_user(email, password)
+def create_user(**params):
+    return get_user_model().objects.create_user(**params)
 
 
-class ModelTests(TestCase):
-    def test_create_user_with_email_successful(self):
-        email = 'test@example.com'
-        password = 'testpass123'
-        name = 'Test User'
-        user = get_user_model().objects.create_user(
-            email=email,
-            password=password,
-            name=name
-        )
+def create_schedule(user, **params):
+    defaults = {
+        'lessons': 'Lesson1',
+    }
+    defaults.update(params)
 
-        self.assertEqual(user.email, email)
-        self.assertEqual(user.name, name)
-        self.assertTrue(user.check_password(password))
+    return Schedule.objects.create(user=user, **defaults)
 
-    def test_new_user_email_normalizer(self):
-        """Test email is normalized for new users"""
-        sample_email = [
-            ['test1@EXAMPLE.com', 'test1@example.com'],
-            ['Test2@Example.com', 'Test2@example.com'],
-            ['TEST3@EXAMPLE.COM', 'TEST3@example.com'],
-            ['test4@example.COM', 'test4@example.com'],
-        ]
-        for email, expected in sample_email:
-            user = get_user_model().objects.create_user(email, 'sample123')
-            self.assertEqual(user.email, expected)
 
-    def test_new_user_without_email_raises_error(self):
-        """Test that creating a user without an email raises a ValueError"""
-        with self.assertRaises(ValueError):
-            get_user_model().objects.create_user('', 'test123')
+class PublicScheduleAPITest(TestCase):
+    """Test unauthenticated schedule API requests"""
 
-    def test_create_superuser(self):
-        """Test creating a superuser"""
-        user = get_user_model().objects.create_superuser(
-            'test@example.com',
-            'test123',
-        )
-        self.assertTrue(user.is_superuser)
-        self.assertTrue(user.is_staff)
+    def setUp(self):
+        self.client = APIClient()
+
+    def test_auth_required(self):
+        """Test that authentication is required"""
+        res = self.client.get(SCHEDULES_URL)
+
+        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class PrivateScheduleAPITest(TestCase):
+    """Test authenticated schedule API requests"""
+
+    def setUp(self):
+        self.client = APIClient()
+        self.user = create_user(email='user@example.com', password='test123')
+        self.client.force_authenticate(self.user)
+
+    def test_retrieve_schedules(self):
+        """Test retrieving a list of schedules"""
+        create_schedule(user=self.user)
+        create_schedule(user=self.user)
+
+        res = self.client.get(SCHEDULES_URL)
+
+        schedules = Schedule.objects.all().order_by('-id')
+        serializer = ScheduleSerializer(schedules, many=True)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.data, serializer.data)
+
+    def test_schedules_limited_to_user(self):
+        """Test that schedules for the authenticated user are returned"""
+        user2 = create_user(email='other@example.com', password='test123')
+        create_schedule(user=user2)
+        create_schedule(user=self.user)
+
+        res = self.client.get(SCHEDULES_URL)
+
+        schedules = Schedule.objects.filter(user=self.user)
+        serializer = ScheduleSerializer(schedules, many=True)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(res.data), 1)
+        self.assertEqual(res.data, serializer.data)
 
     def test_create_schedule(self):
-        """test creating a schedule is successful"""
-        user = create_user()
-        schedule = models.Schedule.objects.create(user=user)
-        self.assertEqual(str(schedule), user.name)
+        """Test creating a new schedule"""
+        payload = {'lessons': 'Lesson2'}
+        res = self.client.post(SCHEDULES_URL, payload)
 
-    def test_create_lesson(self):
-        """test creating a lesson is successful"""
-        user = create_user()
-        schedule = models.Schedule.objects.create(user=user)
-        lesson = models.Lesson.objects.create(
-            schedule=schedule,
-            lesson_name='Lesson1',
-            room='Room1',
-            start_time='08:00',
-            end_time='10:00',
-            day='2024-01-01'
-        )
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        schedule = Schedule.objects.get(id=res.data['id'])
+        self.assertEqual(schedule.lessons, payload['lessons'])
+        self.assertEqual(schedule.user, self.user)
 
-        self.assertEqual(str(lesson), lesson.lesson_name)
-        self.assertEqual(lesson.schedule, schedule)
+    def test_update_schedule(self):
+        """Test updating a schedule"""
+        schedule = create_schedule(user=self.user)
+        payload = {'lessons': 'Lesson3'}
+
+        url = reverse('schedule:schedule-detail', args=[schedule.id])
+        res = self.client.patch(url, payload)
+
+        schedule.refresh_from_db()
+        self.assertEqual(schedule.lessons, payload['lessons'])
+
+    def test_delete_schedule(self):
+        """Test deleting a schedule"""
+        schedule = create_schedule(user=self.user)
+
+        url = reverse('schedule:schedule-detail', args=[schedule.id])
+        res = self.client.delete(url)
+
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Schedule.objects.filter(id=schedule.id).exists())

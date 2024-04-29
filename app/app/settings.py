@@ -45,8 +45,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'user',
+    'app',
     'core',
+    'user',
     'plan',
     'rest_framework',
     'rest_framework.authtoken',
@@ -158,3 +159,5 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.2.3',
     'COMPONENT_SPLIT_REQUEST': True,
 }
+
+
