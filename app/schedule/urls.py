@@ -9,6 +9,7 @@ router = DefaultRouter()
 router.register('schedules', views.ScheduleViewSet)
 router.register('lessons', views.LessonViewSet)
 
+
 app_name = 'schedule'
 
 urlpatterns = [

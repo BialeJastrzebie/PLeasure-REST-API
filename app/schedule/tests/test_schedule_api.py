@@ -120,24 +120,22 @@ class PrivateScheduleAPITest(TestCase):
             payload['lessons'][0]['name']
         )
 
-    # def test_update_schedule(self):
-    #     """Test updating a schedule"""
-    #     schedule = create_schedule(user=self.user)
-    #     lesson = Lesson.objects.create(name='Lesson3')
-    #     payload = {'lessons': [lesson.id]}
+    def test_update_schedule(self):
+        """Test updating a schedule"""
+        schedule = create_schedule(user=self.user)
+        payload = {
+            'name': 'New schedule',
+        }
+        url = reverse('schedule:schedule-detail', args=[schedule.id])
+        res = self.client.patch(url, payload, format='json')
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        schedule.refresh_from_db()
+        self.assertEqual(schedule.name, payload['name'])
 
-    #     url = reverse('schedule:schedule-detail', args=[schedule.id])
-    #     res = self.client.patch(url, payload, format='json')
-
-    #     schedule.refresh_from_db()
-    #     self.assertEqual(schedule.lessons.first().id, payload['lessons'][0])
-
-    # def test_delete_schedule(self):
-    #     """Test deleting a schedule"""
-    #     schedule = create_schedule(user=self.user)
-
-    #     url = reverse('schedule:schedule-detail', args=[schedule.id])
-    #     res = self.client.delete(url)
-
-    #     self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
-    #     self.assertFalse(Schedule.objects.filter(id=schedule.id).exists())
+    def test_delete_schedule(self):
+        """Test deleting a schedule"""
+        schedule = create_schedule(user=self.user)
+        url = reverse('schedule:schedule-detail', args=[schedule.id])
+        res = self.client.delete(url)
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Schedule.objects.count(), 0)
