@@ -30,6 +30,8 @@ class PublicUserApiTests(TestCase):
             'email': 'test@example.com',
             'password': 'password123',
             'name': 'test name',
+            'first_name': 'test first name',
+            'last_name': 'test last name',
         }
         res = self.client.post(CREATE_USER_URL, payload)
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
@@ -66,9 +68,9 @@ class PublicUserApiTests(TestCase):
     def test_create_token_for_user(self):
         """test generates token for valid creds"""
         user_details = {
-            'name': 'test name',
             'email': 'test@example.com',
             'password': 'test-user-password123',
+            'name': 'test name',
         }
         create_user(**user_details)
 
@@ -112,7 +114,7 @@ class PrivateUserApiTests(TestCase):
         self.user = create_user(
             email='test@example.com',
             password='testpass123',
-            name='test name'
+            name='test name',
         )
         self.client = APIClient()
         self.client.force_authenticate(user=self.user)
@@ -125,6 +127,8 @@ class PrivateUserApiTests(TestCase):
         self.assertEqual(res.data, {
             'name': self.user.name,
             'email': self.user.email,
+            'first_name': self.user.first_name,
+            'last_name': self.user.last_name,
         })
 
     def test_post_me_not_allowed(self):

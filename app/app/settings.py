@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -36,7 +35,6 @@ ALLOWED_HOSTS.extend(
 )
 
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -49,7 +47,7 @@ INSTALLED_APPS = [
     'app',
     'core',
     'user',
-    'plan',
+    'schedule',
     'rest_framework',
     'rest_framework.authtoken',
     'drf_spectacular',
@@ -160,5 +158,3 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.2.3',
     'COMPONENT_SPLIT_REQUEST': True,
 }
-
-

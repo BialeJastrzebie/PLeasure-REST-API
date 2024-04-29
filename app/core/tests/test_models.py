@@ -5,7 +5,7 @@ Tests for models
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
-from app.core import models
+from core import models
 
 
 def create_user(email='user@example.com', password='testpass123'):
@@ -57,21 +57,25 @@ class ModelTests(TestCase):
     def test_create_schedule(self):
         """test creating a schedule is successful"""
         user = create_user()
-        schedule = models.Schedule.objects.create(user=user)
-        self.assertEqual(str(schedule), user.name)
+        schedule = models.Schedule.objects.create(user=user, name='Schedule1')
+        name = 'Schedule1'
+        self.assertEqual(str(schedule), name)
 
     def test_create_lesson(self):
         """test creating a lesson is successful"""
         user = create_user()
         schedule = models.Schedule.objects.create(user=user)
         lesson = models.Lesson.objects.create(
-            schedule=schedule,
-            lesson_name='Lesson1',
+            user=user,
+            name='Lesson1',
             room='Room1',
             start_time='08:00',
             end_time='10:00',
             day='2024-01-01'
         )
 
-        self.assertEqual(str(lesson), lesson.lesson_name)
-        self.assertEqual(lesson.schedule, schedule)
+        schedule.lessons.add(lesson)
+
+        self.assertEqual(str(lesson), lesson.name)
+        self.assertEqual(lesson.user, user)
+        self.assertEqual(schedule.lessons.first(), lesson)

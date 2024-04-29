@@ -18,7 +18,7 @@ class ScheduleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Schedule
-        fields = ['id', 'user',  'lessons']
+        fields = ['id', 'user',  'name', 'lessons']
         read_only_fields = ['id', 'user']
 
     def _get_or_create_lessons(self, lessons, schedule):
