@@ -89,8 +89,8 @@ class PrivateScheduleAPITest(TestCase):
     # def test_update_schedule(self):
     #     """Test updating a schedule"""
     #     schedule = create_schedule(user=self.user)
-    #     lesson = Lesson.objects.create(name='Lesson3') 
-    #     payload = {'lessons': [lesson.id]}  
+    #     lesson = Lesson.objects.create(name='Lesson3')
+    #     payload = {'lessons': [lesson.id]}
 
     #     url = reverse('schedule:schedule-detail', args=[schedule.id])
     #     res = self.client.patch(url, payload, format='json')
