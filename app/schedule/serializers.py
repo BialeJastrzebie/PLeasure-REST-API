@@ -9,7 +9,7 @@ from core.models import Schedule, Lesson
 class LessonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lesson
-        fields = ['id', 'lesson_name', 'room', 'start_time', 'end_time', 'day']
+        fields = ['id', 'name', 'room', 'start_time', 'end_time', 'day']
         read_only_fields = ['id']
 
 
@@ -18,7 +18,7 @@ class ScheduleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Schedule
-        fields = ['id', 'user',  'name', 'lessons']
+        fields = ['id', 'user', 'name', 'lessons']
         read_only_fields = ['id', 'user']
 
     def _get_or_create_lessons(self, lessons, schedule):
@@ -32,7 +32,8 @@ class ScheduleSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         """Create a schedule."""
-        lessons = validated_data.pop('lessons')
+        lessons = validated_data.pop('lessons', [])
         schedule = Schedule.objects.create(**validated_data)
         self._get_or_create_lessons(lessons, schedule)
+
         return schedule

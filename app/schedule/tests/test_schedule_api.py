@@ -5,9 +5,12 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Schedule
+from core.models import (
+    Lesson,
+    Schedule
+)
 
-# from schedule.serializers import ScheduleSerializer
+from schedule.serializers import ScheduleSerializer
 
 SCHEDULES_URL = reverse('schedule:schedule-list')
 
@@ -17,13 +20,22 @@ def create_user(**params):
 
 
 def create_schedule(user, **params):
-    lesson = {
-        'lessons': 'Lesson1',
+    """Create and return a sample schedule"""
+    defaults = {
+        'name': 'Sample schedule',
     }
-    lesson.update(params)
-    schedule = Schedule.objects.create(user=user, **lesson)
-    schedule.lessons.set(lesson)
+    defaults.update(params)
 
+    schedule = Schedule.objects.create(user=user, **defaults)
+    lesson = Lesson.objects.create(
+        name='Lesson1',
+        room='Room1',
+        start_time='9:15',
+        end_time='10:15',
+        day='2024-04-04',
+        user=user,
+        )
+    schedule.lessons.add(lesson)
     return schedule
 
 
@@ -48,43 +60,65 @@ class PrivateScheduleAPITest(TestCase):
         self.user = create_user(email='user@example.com', password='test123')
         self.client.force_authenticate(self.user)
 
-    # def test_retrieve_schedules(self):
-    #     """Test retrieving a list of schedules"""
-    #     create_schedule(user=self.user)
-    #     create_schedule(user=self.user)
+    def test_retrieve_schedules(self):
+        """Test retrieving a list of schedules"""
+        create_schedule(user=self.user)
+        create_schedule(user=self.user)
 
-    #     res = self.client.get(SCHEDULES_URL)
+        res = self.client.get(SCHEDULES_URL)
 
-    #     schedules = Schedule.objects.all().order_by('-id')
-    #     serializer = ScheduleSerializer(schedules, many=True)
+        schedules = Schedule.objects.all().order_by('id')
+        serializer = ScheduleSerializer(schedules, many=True)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(res.data), 2)
+        self.assertEqual(res.data, serializer.data)
 
-    #     self.assertEqual(res.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(res.data, serializer.data)
+    def test_schedules_limited_to_user(self):
+        """Test that schedules for the authenticated user are returned"""
+        user2 = create_user(email='other@example.com', password='test123')
+        create_schedule(user=user2)
+        create_schedule(user=self.user)
 
-    # def test_schedules_limited_to_user(self):
-    #     """Test that schedules for the authenticated user are returned"""
-    #     user2 = create_user(email='other@example.com', password='test123')
-    #     create_schedule(user=user2)
-    #     create_schedule(user=self.user)
+        res = self.client.get(SCHEDULES_URL)
 
-    #     res = self.client.get(SCHEDULES_URL)
+        schedules = Schedule.objects.filter(user=self.user)
+        serializer = ScheduleSerializer(schedules, many=True)
 
-    #     schedules = Schedule.objects.filter(user=self.user)
-    #     serializer = ScheduleSerializer(schedules, many=True)
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(res.data), 1)
+        self.assertEqual(res.data, serializer.data)
 
-    #     self.assertEqual(res.status_code, status.HTTP_200_OK)
-    #     self.assertEqual(len(res.data), 1)
-    #     self.assertEqual(res.data, serializer.data)
-
-    # def test_create_schedule(self):
-    #     """Test creating a new schedule"""
-    #     payload = {'lessons': 'Lesson2'}
-    #     res = self.client.post(SCHEDULES_URL, payload)
-
-    #     self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-    #     schedule = Schedule.objects.get(id=res.data['id'])
-    #     self.assertEqual(schedule.lessons, payload['lessons'])
-    #     self.assertEqual(schedule.user, self.user)
+    def test_create_schedule(self):
+        """Test creating a new schedule"""
+        payload = {
+            'user': 'user@example.com',
+            'name': 'Sample schedule',
+            'lessons': [
+                {
+                    'name': 'Lesson1',
+                    'room': 'Room1',
+                    'start_time': '9:15',
+                    'end_time': '10:15',
+                    'day': '2024-04-04',
+                },
+                {
+                    'name': 'Lesson2',
+                    'room': 'Room2',
+                    'start_time': '10:15',
+                    'end_time': '11:15',
+                    'day': '2024-04-04',
+                }
+            ]
+        }
+        res = self.client.post(SCHEDULES_URL, payload, format='json')
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+        schedule = Schedule.objects.get(id=res.data['id'])
+        self.assertEqual(schedule.lessons.count(), 2)
+        self.assertEqual(schedule.name, payload['name'])
+        self.assertEqual(
+            schedule.lessons.first().name,
+            payload['lessons'][0]['name']
+        )
 
     # def test_update_schedule(self):
     #     """Test updating a schedule"""
