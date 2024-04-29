@@ -24,8 +24,6 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 
-from plan import views as Schedules_views
-
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/schema/', SpectacularAPIView.as_view(), name='api-schema'),

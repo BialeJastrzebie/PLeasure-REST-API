@@ -1,7 +1,8 @@
-#!/usr/bin/env python
+#!/path/to/virtualenv/bin python
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+import unittest
 
 
 def main():
@@ -15,9 +16,10 @@ def main():
             "available on your PYTHONPATH environment variable? Did you "
             "forget to activate a virtual environment?"
         ) from exc
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     execute_from_command_line(sys.argv)
 
 
 if __name__ == '__main__':
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app.settings')
+    print(sys.path)
     main()

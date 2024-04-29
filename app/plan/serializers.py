@@ -3,7 +3,7 @@ serializers for plan APIs
 """
 from rest_framework import serializers
 
-from core.models import User, Schedule, Lesson
+from core.models import Schedule, Lesson
 
 
 class LessonSerializer(serializers.ModelSerializer):

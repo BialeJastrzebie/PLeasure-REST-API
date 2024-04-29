@@ -5,7 +5,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from core.models import Schedule
+from app.core.models import Schedule
 
 from app.plan.serializers import ScheduleSerializer
 
