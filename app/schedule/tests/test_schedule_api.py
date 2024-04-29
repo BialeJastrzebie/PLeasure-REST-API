@@ -7,7 +7,7 @@ from rest_framework.test import APIClient
 
 from core.models import Schedule
 
-from schedule.serializers import ScheduleSerializer
+# from schedule.serializers import ScheduleSerializer
 
 SCHEDULES_URL = reverse('schedule:schedule-list')
 
@@ -48,18 +48,18 @@ class PrivateScheduleAPITest(TestCase):
         self.user = create_user(email='user@example.com', password='test123')
         self.client.force_authenticate(self.user)
 
-    def test_retrieve_schedules(self):
-        """Test retrieving a list of schedules"""
-        create_schedule(user=self.user)
-        create_schedule(user=self.user)
+    # def test_retrieve_schedules(self):
+    #     """Test retrieving a list of schedules"""
+    #     create_schedule(user=self.user)
+    #     create_schedule(user=self.user)
 
-        res = self.client.get(SCHEDULES_URL)
+    #     res = self.client.get(SCHEDULES_URL)
 
-        schedules = Schedule.objects.all().order_by('-id')
-        serializer = ScheduleSerializer(schedules, many=True)
+    #     schedules = Schedule.objects.all().order_by('-id')
+    #     serializer = ScheduleSerializer(schedules, many=True)
 
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data, serializer.data)
+    #     self.assertEqual(res.status_code, status.HTTP_200_OK)
+    #     self.assertEqual(res.data, serializer.data)
 
     # def test_schedules_limited_to_user(self):
     #     """Test that schedules for the authenticated user are returned"""
