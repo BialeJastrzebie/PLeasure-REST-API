@@ -9,11 +9,8 @@ from core.models import UserFriends
 class UserFriendsSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserFriends
-        fields = ['user', 'friend', 'is_approved']
-        extra_kwargs = {
-            'user': {'write_only': True},
-            'friend': {'write_only': True}
-        }
+        fields = ['RelationID', 'user_email', 'friend_email', 'is_approved']
+        read_only_fields = ['RelationID']
 
     def create(self, validated_data):
         """Create a user friend."""
@@ -30,20 +27,3 @@ class UserFriendsSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
-
-    def to_representation(self, instance):
-        """Converts the model instance into the desired format."""
-        response = super().to_representation(instance)
-        response['user'] = instance.user.name
-        response['friend'] = instance.friend.name
-
-        return response
-
-    def validate(self, data):
-        """Check that the user and friend are not the same."""
-        if data['user'] == data['friend']:
-            raise serializers.ValidationError(
-                "User and friend cannot be the same."
-            )
-
-        return data

@@ -32,6 +32,7 @@ class PublicUserApiTests(TestCase):
             'name': 'test name',
             'first_name': 'test first name',
             'last_name': 'test last name',
+            'relations': 'test relations',
         }
         res = self.client.post(CREATE_USER_URL, payload)
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
@@ -125,10 +126,11 @@ class PrivateUserApiTests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(res.data, {
-            'name': self.user.name,
             'email': self.user.email,
+            'name': self.user.name,
             'first_name': self.user.first_name,
             'last_name': self.user.last_name,
+            'relations': [],
         })
 
     def test_post_me_not_allowed(self):

@@ -57,6 +57,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    relations = models.ManyToManyField('UserFriends')
 
     objects = UserManager()
 
@@ -66,16 +67,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 class UserFriends(models.Model):
     """User_Friends object"""
     RelationID = models.AutoField(primary_key=True)
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name='user_friends'
-    )
-    friend = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name='friend_friends'
-    )
+    user_email = models.EmailField(max_length=255)
+    friend_email = models.EmailField(max_length=255)
     is_approved = models.BooleanField(default=False)
 
     def __str__(self):

@@ -2,12 +2,20 @@
 Views for friend
 """
 
+
 from rest_framework import viewsets, mixins
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
 from core.models import UserFriends
 from . import serializers
+
+
+class UserFriendsListView(mixins.ListModelMixin, viewsets.GenericViewSet):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    queryset = UserFriends.objects.all()
+    serializer_class = serializers.UserFriendsSerializer
 
 
 class UserFriendsViewSet(viewsets.GenericViewSet,
@@ -23,8 +31,8 @@ class UserFriendsViewSet(viewsets.GenericViewSet,
     serializer_class = serializers.UserFriendsSerializer
 
     def get_queryset(self):
-        """Return objects for the current authenticated user only"""
-        return self.queryset.filter(user=self.request.user)
+        """Return objects where email is the user's email"""
+        return self.queryset.filter(user_email=self.request.user.email)
 
     def perform_create(self, serializer):
         """Create a new user friend"""
