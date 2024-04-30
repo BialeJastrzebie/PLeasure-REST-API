@@ -110,7 +110,6 @@ class Map(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
     )
-    id = models.AutoField(primary_key=True)
     locations = models.ManyToManyField('Location', related_name='maps')
     filters = models.ManyToManyField('Filter')
 
@@ -120,13 +119,16 @@ class Map(models.Model):
 
 class Location(models.Model):
     """Localisation object"""
-    map = models.ForeignKey('Map', on_delete=models.CASCADE)
+    map = models.ForeignKey(
+        'Map',
+        on_delete=models.CASCADE
+    )
     name = models.CharField(max_length=255)
     x = models.IntegerField()
     y = models.IntegerField()
     image = models.ImageField(null=True, upload_to=map_image_file_path)
     is_favorite = models.BooleanField(default=False)
-    category = models.ForeignKey('Category', on_delete=models.CASCADE)
+    categories = models.ManyToManyField('Category')
 
     def __str__(self):
         return self.name
@@ -160,7 +162,6 @@ class Filter(models.Model):
 class Coupon(models.Model):
     """Coupon object"""
     name = models.CharField(max_length=255)
-    discount = models.IntegerField()
     location = models.ForeignKey(
         'Location',
         on_delete=models.CASCADE
