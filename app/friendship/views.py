@@ -11,13 +11,6 @@ from core.models import UserFriends
 from . import serializers
 
 
-class UserFriendsListView(mixins.ListModelMixin, viewsets.GenericViewSet):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    queryset = UserFriends.objects.all()
-    serializer_class = serializers.UserFriendsSerializer
-
-
 class UserFriendsViewSet(viewsets.GenericViewSet,
                          mixins.ListModelMixin,
                          mixins.CreateModelMixin,
@@ -31,8 +24,8 @@ class UserFriendsViewSet(viewsets.GenericViewSet,
     serializer_class = serializers.UserFriendsSerializer
 
     def get_queryset(self):
-        """Return objects where email is the user's email"""
-        return self.queryset.filter(user_email=self.request.user.email)
+        """Return objects for the current user"""
+        return UserFriends.objects.filter(user_email=self.request.user.email)
 
     def perform_create(self, serializer):
         """Create a new user friend"""
