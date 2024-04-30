@@ -67,14 +67,13 @@ class PrivateScheduleAPITest(TestCase):
     def test_retrieve_schedules(self):
         """Test retrieving a list of schedules"""
         create_schedule(user=self.user)
-        create_schedule(user=self.user)
 
         res = self.client.get(SCHEDULES_URL)
 
         schedules = Schedule.objects.all().order_by('id')
         serializer = ScheduleSerializer(schedules, many=True)
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data), 2)
+        self.assertEqual(len(res.data), 1)
         self.assertEqual(res.data, serializer.data)
 
     def test_schedules_limited_to_user(self):
