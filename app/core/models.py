@@ -84,7 +84,7 @@ class UserFriends(models.Model):
 
 class Schedule(models.Model):
     """Schedule object"""
-    user = models.ForeignKey(
+    user = models.OneToOneField(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
     )
