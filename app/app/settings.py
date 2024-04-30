@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'core',
     'user',
     'schedule',
+    'friendship',
     'rest_framework',
     'rest_framework.authtoken',
     'drf_spectacular',
