@@ -1,3 +1,7 @@
+"""
+Serializers for the map app.
+"""
+
 from rest_framework import serializers
 
 from core.models import Map, Location, Category, Filter, Coupon
