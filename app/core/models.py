@@ -116,6 +116,7 @@ class Location(models.Model):
         on_delete=models.CASCADE
     )
     name = models.CharField(max_length=255)
+    address = models.CharField(max_length=255)
     x = models.IntegerField()
     y = models.IntegerField()
     image = models.ImageField(null=True, upload_to=map_image_file_path)
