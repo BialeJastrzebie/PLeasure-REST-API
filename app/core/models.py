@@ -11,14 +11,6 @@ from django.contrib.auth.models import (
     BaseUserManager, PermissionsMixin)
 
 
-def recipe_image_file_path(instance, filename):
-    """generate file path for new plan image"""
-    ext = os.path.splitext(filename)[1]
-    filename = f'{uuid.uuid4()}{ext}'
-
-    return os.path.join('uploads', 'plan', filename)
-
-
 def map_image_file_path(instance, filename):
     """generate file path for new map image"""
     ext = os.path.splitext(filename)[1]
@@ -110,7 +102,7 @@ class Map(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
     )
-    locations = models.ManyToManyField('Location', related_name='maps')
+    locations = models.ManyToManyField('Location')
     filters = models.ManyToManyField('Filter')
 
     def __str__(self):
@@ -119,8 +111,8 @@ class Map(models.Model):
 
 class Location(models.Model):
     """Localisation object"""
-    map = models.ForeignKey(
-        'Map',
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
     )
     name = models.CharField(max_length=255)
@@ -129,6 +121,7 @@ class Location(models.Model):
     image = models.ImageField(null=True, upload_to=map_image_file_path)
     is_favorite = models.BooleanField(default=False)
     categories = models.ManyToManyField('Category')
+    coupons = models.ManyToManyField('Coupon')
 
     def __str__(self):
         return self.name
@@ -136,11 +129,11 @@ class Location(models.Model):
 
 class Category(models.Model):
     """Category object"""
-    name = models.CharField(max_length=255)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
     )
+    name = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
@@ -148,11 +141,11 @@ class Category(models.Model):
 
 class Filter(models.Model):
     """Filter for filter map object"""
-    name = models.CharField(max_length=255)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
     )
+    name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
@@ -161,11 +154,12 @@ class Filter(models.Model):
 
 class Coupon(models.Model):
     """Coupon object"""
-    name = models.CharField(max_length=255)
-    location = models.ForeignKey(
-        'Location',
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE
     )
+    name = models.CharField(max_length=255)
+    valid_until = models.TimeField()
     is_active = models.BooleanField(default=False)
 
     def __str__(self):
