@@ -6,9 +6,11 @@ import os
 
 from django.conf import settings
 from django.db import models
+from django.contrib.gis.db import models
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager, PermissionsMixin)
+from app.settings import GEOSPATIAL_SYSTEM
 
 
 def map_image_file_path(instance, filename):
@@ -117,8 +119,7 @@ class Location(models.Model):
     )
     name = models.CharField(max_length=255)
     address = models.CharField(max_length=255)
-    x = models.FloatField()
-    y = models.FloatField()
+    point = models.PointField(srid=GEOSPATIAL_SYSTEM)
     image = models.ImageField(null=True, upload_to=map_image_file_path)
     is_favorite = models.BooleanField(default=False)
     categories = models.ManyToManyField('Category')

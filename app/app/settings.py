@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',
     'core',
     'user',
     'schedule',
@@ -166,3 +167,5 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.2.3',
     'COMPONENT_SPLIT_REQUEST': True,
 }
+
+GEOSPATIAL_SYSTEM = 'SRID=4326'
