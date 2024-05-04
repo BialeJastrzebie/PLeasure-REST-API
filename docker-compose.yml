@@ -33,6 +33,17 @@ services:
       - POSTGRES_USER=devuser
       - POSTGRES_PASSWORD=changeme
 
+  geodb:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_DB=devdb
+      - POSTGRES_USER=devuser
+      - POSTGRES_PASSWORD=changeme
+    volumes:
+      - geo-db-data:/var/lib/postgresql/data
+
 volumes:
   dev-db-data:
   dev-static-data:
+  geo-db-data:
+  geo-static-data:

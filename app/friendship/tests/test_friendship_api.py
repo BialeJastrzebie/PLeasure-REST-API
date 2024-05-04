@@ -91,7 +91,6 @@ class PrivateFriendshipAPITest(TestCase):
             'is_approved': True
         }
         url = '/api/friendship/friends/' + str(friend.RelationID) + '/'
-        print(url)
         res = self.client.patch(url, payload)
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -102,7 +101,6 @@ class PrivateFriendshipAPITest(TestCase):
         """Test deleting a friend"""
         friend = create_friend(user=self.user)
         url = '/api/friendship/friends/' + str(friend.RelationID) + '/'
-        print(url)
         res = self.client.delete(url)
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(UserFriends.objects.count(), 0)
