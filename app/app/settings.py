@@ -44,12 +44,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.gis',
     'core',
     'user',
     'schedule',
     'friendship',
-    'map',
     'rest_framework',
     'rest_framework.authtoken',
     'drf_spectacular',
@@ -92,13 +90,6 @@ WSGI_APPLICATION = 'app.wsgi.application'
 DATABASES = {
     'default': {
         "ENGINE": "django.db.backends.postgresql",
-        "HOST": os.environ.get("DB_HOST"),
-        "NAME": os.environ.get("DB_NAME"),
-        "USER": os.environ.get("DB_USER"),
-        "PASSWORD": os.environ.get("DB_PASS"),
-    },
-    'geodb': {
-        "ENGINE": "django.contrib.gis.db.backends.postgis",
         "HOST": os.environ.get("DB_HOST"),
         "NAME": os.environ.get("DB_NAME"),
         "USER": os.environ.get("DB_USER"),
@@ -167,5 +158,3 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.2.3',
     'COMPONENT_SPLIT_REQUEST': True,
 }
-
-GEOSPATIAL_SYSTEM = 'SRID=4326'

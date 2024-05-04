@@ -6,11 +6,9 @@ import os
 
 from django.conf import settings
 from django.db import models
-from django.contrib.gis.db import models
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager, PermissionsMixin)
-from app.settings import GEOSPATIAL_SYSTEM
 
 
 def map_image_file_path(instance, filename):
@@ -93,76 +91,6 @@ class Lesson(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
     day = models.DateField()
-
-    def __str__(self):
-        return self.name
-
-
-class Map(models.Model):
-    """Map object"""
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
-    )
-    locations = models.ManyToManyField('Location')
-    filters = models.ManyToManyField('Filter')
-
-    def __str__(self):
-        return self.user.name
-
-
-class Location(models.Model):
-    """Localisation object"""
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
-    )
-    name = models.CharField(max_length=255)
-    address = models.CharField(max_length=255)
-    point = models.PointField(srid=GEOSPATIAL_SYSTEM)
-    image = models.ImageField(null=True, upload_to=map_image_file_path)
-    is_favorite = models.BooleanField(default=False)
-    categories = models.ManyToManyField('Category')
-    coupons = models.ManyToManyField('Coupon')
-
-    def __str__(self):
-        return self.name
-
-
-class Category(models.Model):
-    """Category object"""
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
-    )
-    name = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.name
-
-
-class Filter(models.Model):
-    """Filter for filter map object"""
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
-    )
-    name = models.CharField(max_length=255)
-    is_active = models.BooleanField(default=True)
-
-    def __str__(self):
-        return self.name
-
-
-class Coupon(models.Model):
-    """Coupon object"""
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
-    )
-    name = models.CharField(max_length=255)
-    valid_until = models.TimeField()
-    is_active = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
