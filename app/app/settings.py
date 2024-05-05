@@ -44,11 +44,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis'
     'core',
     'user',
     'schedule',
     'friendship',
+    'leaflet',
     'rest_framework',
+    'rest_framework_gis',
     'rest_framework.authtoken',
     'drf_spectacular',
 ]
@@ -122,7 +125,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Poland/Warsaw'
 
 USE_I18N = True
 
@@ -157,4 +160,12 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'Very good API for the PŁEASURE APP',
     'VERSION': '1.2.3',
     'COMPONENT_SPLIT_REQUEST': True,
+}
+
+LEAFLET_CONFIG = {
+    'DEFAULT_CENTER': (52.22977, 21.01178),
+    'DEFAULT_ZOOM': 8,
+    'MAX_ZOOM': 18,
+    'SCALE': 'metric',
+    'ATTRIBUTION_PREFIX': 'RESTAPI PLEASURE',
 }

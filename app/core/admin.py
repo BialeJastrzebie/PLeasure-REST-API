@@ -5,6 +5,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
 
+from leaflet.admin import LeafletGeoAdmin
+
 from . import models
 
 
@@ -43,7 +45,15 @@ class UserAdmin(BaseUserAdmin):
     )
 
 
+class MapAdmin(LeafletGeoAdmin):
+    list_display = ['name', 'address', 'location', 'image',
+                    'categories', 'coupons']
+    search_fields = ['name', 'address', 'categories', 'coupons']
+    ordering = ['name']
+
+
 admin.site.register(models.User, UserAdmin)
 admin.site.register(models.UserFriends)
 admin.site.register(models.Schedule)
 admin.site.register(models.Lesson)
+admin.site.register(models.Map, MapAdmin)
