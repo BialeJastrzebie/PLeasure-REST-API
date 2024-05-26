@@ -3,20 +3,20 @@ serializers for friend APIs
 """
 from rest_framework import serializers
 
-from core.models import UserFriends
+from core.models import Friendship
 
 
-class UserFriendsSerializer(serializers.ModelSerializer):
+class FriendshipSerializer(serializers.ModelSerializer):
     class Meta:
-        model = UserFriends
-        fields = ['RelationID', 'user_email', 'friend_email', 'is_approved']
-        read_only_fields = ['RelationID']
+        model = Friendship
+        fields = ['user', 'friend', 'created_at', 'is_approved']
+        read_only_fields = ['user', 'created_at']
 
     def create(self, validated_data):
         """Create a user friend."""
-        user_friend = UserFriends.objects.create(**validated_data)
+        friendship = Friendship.objects.create(**validated_data)
 
-        return user_friend
+        return friendship
 
     def update(self, instance, validated_data):
         """Update a user friend."""

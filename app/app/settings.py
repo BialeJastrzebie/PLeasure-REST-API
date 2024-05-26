@@ -96,13 +96,13 @@ DATABASES = {
         "USER": os.environ.get("DB_USER"),
         "PASSWORD": os.environ.get("DB_PASS"),
     },
-    'gis_db': {
-        "ENGINE": "django.contrib.gis.db.backends.postgis",
-        "HOST": os.environ.get("DB_HOST"),
-        "NAME": os.environ.get("DB_NAME"),
-        "USER": os.environ.get("DB_USER"),
-        "PASSWORD": os.environ.get("DB_PASS"),
-    }
+    # 'gis_db': {
+    #     "ENGINE": "django.contrib.gis.db.backends.postgis",
+    #     "HOST": os.environ.get("DB_HOST"),
+    #     "NAME": os.environ.get("DB_NAME"),
+    #     "USER": os.environ.get("DB_USER"),
+    #     "PASSWORD": os.environ.get("DB_PASS"),
+    # }
 }
 
 # Password validation
@@ -171,7 +171,7 @@ LEAFLET_CONFIG = {
     'ATTRIBUTION_PREFIX': 'RESTAPI PLEASURE',
 }
 
-DATABASE_ROUTERS = ['app.map.routers.GISDBRouter']
+# DATABASE_ROUTERS = ['app.map.routers.GISDBRouter']
 
 GDAL_LIBRARY_PATH = glob('/usr/lib/libgdal.so.*')[0]
 GEOS_LIBRARY_PATH = glob('/usr/lib/libgeos_c.so.*')[0]

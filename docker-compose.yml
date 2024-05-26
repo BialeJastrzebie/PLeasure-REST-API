@@ -23,7 +23,7 @@ services:
       - DEBUG=1
     depends_on:
       - db
-      - gis_db
+#      - gis_db
 
   db:
     image: postgres:13-alpine
@@ -34,17 +34,17 @@ services:
       - POSTGRES_USER=devuser
       - POSTGRES_PASSWORD=changeme
 
-  gis_db:
-    image: postgis/postgis:latest
-    volumes:
-      - gis-db-data:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=gisdb
-      - POSTGRES_USER=gisuser
-      - POSTGRES_PASSWORD=changeme
+#  gis_db:
+#    image: postgis/postgis:latest
+#    volumes:
+#      - gis-db-data:/var/lib/postgresql/data
+#    environment:
+#      - POSTGRES_DB=gisdb
+#      - POSTGRES_USER=gisuser
+#      - POSTGRES_PASSWORD=changeme
 
 volumes:
   dev-db-data:
   dev-static-data:
-  gis-db-data:
-  gis-static-data:
+#  gis-db-data:
+#  gis-static-data:

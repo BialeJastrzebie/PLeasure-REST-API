@@ -6,7 +6,7 @@ from . import views
 
 
 router = DefaultRouter()
-router.register('friends', views.UserFriendsViewSet)
+router.register('friends', views.FriendshipViewSet)
 
 
 app_name = 'friendship'

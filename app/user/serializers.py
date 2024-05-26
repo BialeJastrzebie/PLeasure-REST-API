@@ -6,12 +6,12 @@ from django.utils.translation import gettext as _
 
 from rest_framework import serializers
 
-from friendship.serializers import UserFriendsSerializer
+from friendship.serializers import FriendshipSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
     """serializer for the user object"""
-    relations = UserFriendsSerializer(many=True, required=False)
+    relations = FriendshipSerializer(many=True, required=False)
 
     class Meta:
         model = get_user_model()
@@ -22,7 +22,7 @@ class UserSerializer(serializers.ModelSerializer):
     def _get_or_create_relations(self, relations, user):
         auth_user = self.context['request'].user
         for relation in relations:
-            relation_obj, create = UserFriendsSerializer().get_or_create(
+            relation_obj, create = FriendshipSerializer().get_or_create(
                 user=auth_user,
                 **relation,
             )

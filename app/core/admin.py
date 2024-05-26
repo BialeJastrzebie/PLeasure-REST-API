@@ -48,12 +48,12 @@ class UserAdmin(BaseUserAdmin):
 class MapAdmin(LeafletGeoAdmin):
     list_display = ['name', 'address', 'location', 'image',
                     'categories', 'coupons']
-    search_fields = ['name', 'address', 'categories', 'coupons']
+    search_fields = ['name']
     ordering = ['name']
 
 
 admin.site.register(models.User, UserAdmin)
-admin.site.register(models.UserFriends)
+admin.site.register(models.Friendship)
 admin.site.register(models.Schedule)
 admin.site.register(models.Lesson)
 # admin.site.register(models.Map, MapAdmin)

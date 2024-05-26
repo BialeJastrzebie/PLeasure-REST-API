@@ -1,14 +1,22 @@
 """
 Database models
 """
-
+import uuid
 
 from django.conf import settings
 from django.db import models
-
+import os
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager, PermissionsMixin)
+
+
+def location_image_file_path(instance, filename):
+    """generate file path for new location image"""
+    ext = os.path.splitext(filename)[1]
+    filename = f'{uuid.uuid4()}{ext}'
+
+    return os.path.join('uploads', 'location', filename)
 
 
 class UserManager(BaseUserManager):
@@ -41,22 +49,36 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    relations = models.ManyToManyField('UserFriends')
+    relations = models.ManyToManyField('Friendship', related_name='relations')
 
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
 
 
-class UserFriends(models.Model):
-    """User_Friends object"""
-    RelationID = models.AutoField(primary_key=True)
-    user_email = models.EmailField(max_length=255)
-    friend_email = models.EmailField(max_length=255)
+class Friendship(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='friendship_requests_sent'
+    )
+    friend = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='friendship_requests_received'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
     is_approved = models.BooleanField(default=False)
 
+    class Meta:
+        unique_together = ('user', 'friend')
+
+    def approve(self):
+        self.is_approved = True
+        self.save()
+
     def __str__(self):
-        return f"{self.user.name} - {self.friend.name}"
+        return f"{self.user} - {self.friend}"
 
 
 class Schedule(models.Model):
@@ -83,6 +105,22 @@ class Lesson(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
     day = models.DateField()
+
+    def __str__(self):
+        return self.name
+
+
+class Location(models.Model):
+    """Location object"""
+    name = models.CharField(max_length=255)
+    category = models.CharField(max_length=255)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    address = models.CharField(max_length=40)
+    description = models.TextField(blank=False, max_length=400)
+    image = models.ImageField(null=True, upload_to=location_image_file_path)
+    url = models.URLField(max_length=255, verbose_name='URL')
+    coupon = models.CharField(max_length=80, blank=True)
 
     def __str__(self):
         return self.name
