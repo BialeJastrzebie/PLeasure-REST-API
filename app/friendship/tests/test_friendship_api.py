@@ -25,19 +25,23 @@ def create_user(**params):
 
 
 def create_friendship(user, friend, is_approved=False):
-    return Friendship.objects.create(user=user, friend=friend, is_approved=is_approved)
+    return Friendship.objects.create(user=user, friend=friend,
+                                     is_approved=is_approved)
 
 
 class FriendshipApiTests(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user1 = create_user(email='user1@example.com', password='testpass')
-        self.user2 = create_user(email='user2@example.com', password='testpass')
+        self.user1 = create_user(email='user1@example.com',
+                                 password='testpass')
+        self.user2 = create_user(email='user2@example.com',
+                                 password='testpass')
         self.client.force_authenticate(self.user1)
 
     def test_send_friend_request(self):
         """Test that a user can send a friend request"""
-        res = self.client.post(FRIENDS_URL, {'friend': self.user2.id})
+        res = self.client.post(FRIENDS_URL,
+                               {'friend': self.user2.id})
 
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Friendship.objects.count(), 1)
@@ -65,7 +69,8 @@ class FriendshipApiTests(TestCase):
 
     def test_retrieve_friend_request(self):
         """Test retrieving a friend request"""
-        friendship = Friendship.objects.create(user=self.user1, friend=self.user2)
+        friendship = Friendship.objects.create(user=self.user1,
+                                               friend=self.user2)
         url = '/api/friendship/friends/' + str(friendship.id) + '/'
         res = self.client.get(url)
 
@@ -74,7 +79,9 @@ class FriendshipApiTests(TestCase):
 
     def test_update_friend_request(self):
         """Test updating a friend request"""
-        friendship = Friendship.objects.create(user=self.user1, friend=self.user2)
+        friendship = Friendship.objects.create(
+            user=self.user1, friend=self.user2
+        )
         url = '/api/friendship/friends/' + str(friendship.id) + '/'
         payload = {'is_approved': True}
         res = self.client.patch(url, payload)
@@ -85,7 +92,9 @@ class FriendshipApiTests(TestCase):
 
     def test_delete_friend_request(self):
         """Test deleting a friend request"""
-        friendship = Friendship.objects.create(user=self.user1, friend=self.user2)
+        friendship = Friendship.objects.create(
+            user=self.user1, friend=self.user2
+        )
         url = '/api/friendship/friends/' + str(friendship.id) + '/'
         res = self.client.delete(url)
 

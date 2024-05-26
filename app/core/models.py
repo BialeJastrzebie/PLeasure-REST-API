@@ -50,7 +50,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     relations = models.ManyToManyField('Friendship', related_name='relations')
-
+    favorite_locations = models.ManyToManyField('Location', blank=True)
     objects = UserManager()
 
     USERNAME_FIELD = 'email'

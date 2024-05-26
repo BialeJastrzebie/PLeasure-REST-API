@@ -8,6 +8,8 @@ from rest_framework import serializers
 
 from friendship.serializers import FriendshipSerializer
 
+from map.serializers import LocationSerializer
+
 
 class UserSerializer(serializers.ModelSerializer):
     """serializer for the user object"""
@@ -16,7 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ['email', 'password', 'name',
-                  'first_name', 'last_name', 'relations']
+                  'first_name', 'last_name', 'relations', 'favorite_locations']
         extra_kwargs = {'password': {'write_only': True, 'min_length': 5}}
 
     def _get_or_create_relations(self, relations, user):
@@ -28,12 +30,22 @@ class UserSerializer(serializers.ModelSerializer):
             )
             user.relations.add(relation_obj)
 
+    def _get_or_create_favorite_locations(self, favorite_locations, user):
+        auth_user = self.context['request'].user
+        for location in favorite_locations:
+            location_obj, create = LocationSerializer().get_or_create(
+                user=auth_user,
+                **location,
+            )
+            user.favorite_locations.add(location_obj)
+
     def create(self, validated_data):
         """create and return a user with encrypted password"""
         relations = validated_data.pop('relations', [])
+        favorite_locations = validated_data.pop('favorite_locations', [])
         user = get_user_model().objects.create_user(**validated_data)
         self._get_or_create_relations(relations, user)
-
+        self._get_or_create_favorite_locations(favorite_locations, user)
         return user
 
     def update(self, instance, validated_data):

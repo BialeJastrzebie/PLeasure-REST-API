@@ -26,6 +26,7 @@ class PublicUserApiTests(TestCase):
 
     def test_create_user_success(self):
         """test creating a user is successful"""
+
         payload = {
             'email': 'test@example.com',
             'password': 'password123',
@@ -33,6 +34,7 @@ class PublicUserApiTests(TestCase):
             'first_name': 'test first name',
             'last_name': 'test last name',
             'relations': 'test relations',
+            'favorite_locations': [],
         }
         res = self.client.post(CREATE_USER_URL, payload)
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
@@ -131,6 +133,7 @@ class PrivateUserApiTests(TestCase):
             'first_name': self.user.first_name,
             'last_name': self.user.last_name,
             'relations': [],
+            'favorite_locations': [],
         })
 
     def test_post_me_not_allowed(self):
