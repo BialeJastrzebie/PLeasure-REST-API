@@ -113,9 +113,9 @@ class Lesson(models.Model):
 class Location(models.Model):
     """Location object"""
     name = models.CharField(max_length=255)
-    category = models.CharField(max_length=255)
-    latitude = models.DecimalField(max_digits=14, decimal_places=6)
-    longitude = models.DecimalField(max_digits=14, decimal_places=6)
+    category = models.CharField(max_length=255, blank=True)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6)
     address = models.CharField(max_length=40)
     description = models.TextField(blank=False, max_length=400)
     image = models.ImageField(null=True, upload_to=location_image_file_path)
