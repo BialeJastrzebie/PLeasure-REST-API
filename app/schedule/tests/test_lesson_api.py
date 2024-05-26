@@ -4,7 +4,6 @@ Tests for the lesson API
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-from django.urls import reverse
 
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -12,8 +11,6 @@ from rest_framework.test import APIClient
 from core.models import Lesson
 
 from schedule.serializers import LessonSerializer
-
-LESSON_URL = reverse('schedule:lesson-list')
 
 
 def create_user(**params):
@@ -42,7 +39,7 @@ class PublicScheduleAPITest(TestCase):
 
     def test_auth_required(self):
         """Test that authentication is required"""
-        res = self.client.get(LESSON_URL)
+        res = self.client.get('/api/schedule/lessons/')
 
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
@@ -60,7 +57,7 @@ class PrivateScheduleAPITest(TestCase):
         create_lesson(user=self.user)
         create_lesson(user=self.user)
 
-        res = self.client.get(LESSON_URL)
+        res = self.client.get('/api/schedule/lessons/')
 
         lessons = Lesson.objects.all().order_by('id')
         serializer = LessonSerializer(lessons, many=True)
@@ -70,11 +67,12 @@ class PrivateScheduleAPITest(TestCase):
 
     def test_lessons_limited_to_user(self):
         """Test that lessons for the authenticated user are returned"""
-        user2 = create_user(email='other@example.com', password='test123')
+        user2 = create_user(email='other@example.com',
+                            password='test123')
         create_lesson(user=user2)
         create_lesson(user=self.user)
 
-        res = self.client.get(LESSON_URL)
+        res = self.client.get('/api/schedule/lessons/')
         lessons = Lesson.objects.filter(user=self.user)
         serializer = LessonSerializer(lessons, many=True)
 
@@ -91,7 +89,7 @@ class PrivateScheduleAPITest(TestCase):
             'end_time': '10:15',
             'day': '2024-04-04',
         }
-        self.client.post(LESSON_URL, payload)
+        self.client.post('/api/schedule/lessons/', payload)
 
         exists = Lesson.objects.filter(
             user=self.user,
@@ -108,7 +106,7 @@ class PrivateScheduleAPITest(TestCase):
             'end_time': '10:15',
             'day': '2024-04-04',
         }
-        res = self.client.post(LESSON_URL, payload)
+        res = self.client.post('/api/schedule/lessons/', payload)
 
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -117,7 +115,7 @@ class PrivateScheduleAPITest(TestCase):
         lesson = create_lesson(user=self.user)
 
         res = self.client.delete(
-            reverse('schedule:lesson-detail', args=[lesson.id])
+            '/api/schedule/lessons/{0}/'.format(lesson.id)
         )
 
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)

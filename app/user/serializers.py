@@ -59,6 +59,13 @@ class UserSerializer(serializers.ModelSerializer):
 
         return user
 
+    def delete_favourite_location(self, instance, validated_data):
+        """delete a favourite location"""
+        location = validated_data.pop('location', None)
+        user = super().update(instance, validated_data)
+        user.favorite_locations.remove(location)
+        return user
+
 
 class AuthTokenSerializer(serializers.Serializer):
     """serializer for user auth token"""

@@ -13,7 +13,7 @@ class UserAdmin(BaseUserAdmin):
     ordering = ['id']
     list_display = ['email']
     fieldsets = (
-        (None, {'fields': ('email', 'password', 'first_name', 'last_name')}),
+        (None, {'fields': ('email', 'password', 'favorite_locations')}),
         (
             _('Permissions'),
             {
@@ -34,19 +34,39 @@ class UserAdmin(BaseUserAdmin):
                 'email',
                 'password1',
                 'password2',
-                'name',
                 'is_active',
                 'is_staff',
                 'is_superuser',
-                'relations',
-                'favorite_locations',
             )
         }),
     )
+    filter_horizontal = ('favorite_locations',)
+
+
+class LocationAdmin(admin.ModelAdmin):
+    """Define the admin pages for locations"""
+    ordering = ['id']
+    list_display = ['name', 'category', 'address']
+    fieldsets = (
+        (None, {'fields': ('name', 'category', 'address',
+                           'latitude', 'longitude')}),
+        (
+            _('Details'),
+            {
+                'fields': (
+                    'description',
+                    'url',
+                    'coupon',
+                    'image',
+                )
+            }
+        ),
+    )
+    readonly_fields = ['id']
 
 
 admin.site.register(models.User, UserAdmin)
 admin.site.register(models.Friendship)
 admin.site.register(models.Schedule)
 admin.site.register(models.Lesson)
-admin.site.register(models.Location)
+admin.site.register(models.Location, LocationAdmin)

@@ -34,6 +34,7 @@ urlpatterns = [
     path('api/user/', include('user.urls')),
     path('api/schedule/', include('schedule.urls')),
     path('api/friendship/', include('friendship.urls')),
+    path('api/map/', include('map.urls')),
 ]
 
 if settings.DEBUG:

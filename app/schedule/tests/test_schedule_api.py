@@ -4,7 +4,6 @@ Tests for the Schedule API
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-from django.urls import reverse
 
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -15,8 +14,6 @@ from core.models import (
 )
 
 from schedule.serializers import ScheduleSerializer
-
-SCHEDULES_URL = reverse('schedule:schedule-list')
 
 
 def create_user(**params):
@@ -51,7 +48,7 @@ class PublicScheduleAPITest(TestCase):
 
     def test_auth_required(self):
         """Test that authentication is required"""
-        res = self.client.get(SCHEDULES_URL)
+        res = self.client.get('/api/schedule/schedules/')
 
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
@@ -68,7 +65,7 @@ class PrivateScheduleAPITest(TestCase):
         """Test retrieving a list of schedules"""
         create_schedule(user=self.user)
 
-        res = self.client.get(SCHEDULES_URL)
+        res = self.client.get('/api/schedule/schedules/')
 
         schedules = Schedule.objects.all().order_by('id')
         serializer = ScheduleSerializer(schedules, many=True)
@@ -78,11 +75,12 @@ class PrivateScheduleAPITest(TestCase):
 
     def test_schedules_limited_to_user(self):
         """Test that schedules for the authenticated user are returned"""
-        user2 = create_user(email='other@example.com', password='test123')
+        user2 = create_user(email='other@example.com',
+                            password='test123')
         create_schedule(user=user2)
         create_schedule(user=self.user)
 
-        res = self.client.get(SCHEDULES_URL)
+        res = self.client.get('/api/schedule/schedules/')
 
         schedules = Schedule.objects.filter(user=self.user)
         serializer = ScheduleSerializer(schedules, many=True)
@@ -113,7 +111,8 @@ class PrivateScheduleAPITest(TestCase):
                 }
             ]
         }
-        res = self.client.post(SCHEDULES_URL, payload, format='json')
+        res = self.client.post('/api/schedule/schedules/',
+                               payload, format='json')
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
         schedule = Schedule.objects.get(id=res.data['id'])
         self.assertEqual(schedule.lessons.count(), 2)
@@ -129,7 +128,7 @@ class PrivateScheduleAPITest(TestCase):
         payload = {
             'name': 'New schedule',
         }
-        url = reverse('schedule:schedule-detail', args=[schedule.id])
+        url = '/api/schedule/schedules/{0}/'.format(schedule.id)
         res = self.client.patch(url, payload, format='json')
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         schedule.refresh_from_db()
@@ -138,7 +137,7 @@ class PrivateScheduleAPITest(TestCase):
     def test_delete_schedule(self):
         """Test deleting a schedule"""
         schedule = create_schedule(user=self.user)
-        url = reverse('schedule:schedule-detail', args=[schedule.id])
+        url = '/api/schedule/schedules/{0}/'.format(schedule.id)
         res = self.client.delete(url)
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Schedule.objects.count(), 0)

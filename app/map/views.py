@@ -1,3 +1,13 @@
-# from django.shortcuts import render
+"""
+views for map
+"""
 
-# Create your views here.
+from core.models import Location
+from . import serializers
+from core.views import BaseViewSet
+
+
+class LocationViewSet(BaseViewSet):
+    def __init__(self, *args, **kwargs):
+        super().__init__(Location, serializers.LocationSerializer,
+                         *args, **kwargs)
