@@ -10,8 +10,6 @@ class BaseViewSet(viewsets.GenericViewSet,
                   mixins.UpdateModelMixin,
                   mixins.DestroyModelMixin):
     """Base view set for user owned models"""
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
 
     def __init__(self, model, serializer, *args, **kwargs):
         super().__init__(*args, **kwargs)
