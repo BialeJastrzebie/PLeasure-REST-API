@@ -14,10 +14,6 @@ class BaseViewSet(viewsets.GenericViewSet,
         self.queryset = model.objects.all()
         self.serializer_class = serializer
 
-    def get_queryset(self):
-        """Return objects for the current authenticated user only"""
-        return self.queryset.filter(user=self.request.user)
-
     def perform_create(self, serializer):
         """Create a new object"""
         serializer.save(user=self.request.user)

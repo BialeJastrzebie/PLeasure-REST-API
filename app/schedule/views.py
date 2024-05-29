@@ -18,6 +18,10 @@ class ScheduleViewSet(BaseViewSet):
         super().__init__(Schedule, serializers.ScheduleSerializer,
                          *args, **kwargs)
 
+    def get_queryset(self):
+        """Return objects for the current authenticated user only"""
+        return self.queryset.filter(user=self.request.user)
+
 
 class LessonViewSet(BaseViewSet):
     authentication_classes = [TokenAuthentication]
@@ -26,5 +30,7 @@ class LessonViewSet(BaseViewSet):
     def __init__(self, *args, **kwargs):
         super().__init__(Lesson, serializers.LessonSerializer,
                          *args, **kwargs)
-        authentication_classes = [TokenAuthentication]
-        permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        """Return objects for the current authenticated user only"""
+        return self.queryset.filter(user=self.request.user)
