@@ -16,11 +16,9 @@ RUN python -m venv /py && \
     apk add --update --no-cache postgresql-client jpeg-dev && \
     apk add --no-cache geos gdal && \
     apk add --update --no-cache --virtual .tmp-build-deps \
-        build-base postgresql-dev musl-dev zlib zlib-dev linux-headers &&\
+        build-base postgresql-dev musl-dev zlib zlib-dev linux-headers && \
     /py/bin/pip install -r /tmp/requirements.txt && \
-    if [ $DEV = "true" ]; \
-        then /py/bin/pip install -r /tmp/requirements.dev.txt ; \
-    fi && \
+    if [ $DEV = "true" ]; then /py/bin/pip install -r /tmp/requirements.dev.txt ; fi && \
     rm -rf /tmp && \
     apk del .tmp-build-deps && \
     adduser \
@@ -31,7 +29,16 @@ RUN python -m venv /py && \
     mkdir -p /vol/web/static && \
     chown -R django-user:django-user /vol && \
     chmod -R 755 /vol && \
-    chmod -R +x /scripts
+    chmod -R +x /scripts && \
+    apk add --no-cache dcron
+
+COPY cronjob /etc/cron.d/cronjob
+
+RUN chmod 0644 /etc/cron.d/cronjob
+
+RUN touch /var/log/cron.log
+
+RUN crontab /etc/cron.d/cronjob
 
 ENV PATH="/scripts:/py/bin:$PATH"
 
