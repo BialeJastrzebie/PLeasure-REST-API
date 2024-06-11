@@ -134,6 +134,7 @@ class PrivateUserApiTests(TestCase):
             'last_name': self.user.last_name,
             'relations': [],
             'favorite_locations': [],
+            'coupon_received_locations': [],
         })
 
     def test_post_me_not_allowed(self):

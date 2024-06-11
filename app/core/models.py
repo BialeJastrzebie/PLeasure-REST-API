@@ -2,6 +2,7 @@
 Database models
 """
 import uuid
+from datetime import time, datetime
 
 from django.conf import settings
 from django.db import models
@@ -51,9 +52,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     relations = models.ManyToManyField('Friendship', related_name='relations')
     favorite_locations = models.ManyToManyField('Location', blank=True)
+    coupon_received_locations = models.ManyToManyField(
+        'Location', blank=True, related_name='coupon_received_locations')
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
+
+    def remove_expired_coupons(self):
+        current_time = datetime.now().time()
+        midnight = time(5, 0)  # 5:00 AM
+
+        if current_time > midnight:
+            self.coupon_received_locations.clear()
 
 
 class Friendship(models.Model):

@@ -13,7 +13,7 @@ class UserAdmin(BaseUserAdmin):
     ordering = ['id']
     list_display = ['email']
     fieldsets = (
-        (None, {'fields': ('email', 'password', 'favorite_locations')}),
+        (None, {'fields': ('email', 'password', 'favorite_locations', 'coupon_received_locations')}), # noqa
         (
             _('Permissions'),
             {
@@ -40,7 +40,7 @@ class UserAdmin(BaseUserAdmin):
             )
         }),
     )
-    filter_horizontal = ('favorite_locations',)
+    filter_horizontal = ('favorite_locations', 'coupon_received_locations')
 
 
 class LocationAdmin(admin.ModelAdmin):
