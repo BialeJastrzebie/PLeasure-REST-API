@@ -71,7 +71,7 @@ class ModelTests(TestCase):
             room='Room1',
             start_time='08:00',
             end_time='10:00',
-            day='2024-01-01'
+            day='MON'
         )
 
         schedule.lessons.add(lesson)

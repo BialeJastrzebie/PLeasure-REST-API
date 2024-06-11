@@ -24,7 +24,7 @@ def create_lesson(user, **params):
         'room': 'Room1',
         'start_time': '9:15',
         'end_time': '10:15',
-        'day': '2024-04-04',
+        'day': 'MON',
     }
     defaults.update(params)
 
@@ -87,7 +87,7 @@ class PrivateScheduleAPITest(TestCase):
             'room': 'Room1',
             'start_time': '9:15',
             'end_time': '10:15',
-            'day': '2024-04-04',
+            'day': 'MON',
         }
         self.client.post('/api/schedule/lessons/', payload)
 
@@ -104,7 +104,7 @@ class PrivateScheduleAPITest(TestCase):
             'room': 'Room1',
             'start_time': '9:15',
             'end_time': '10:15',
-            'day': '2024-04-04',
+            'day': 'MON',
         }
         res = self.client.post('/api/schedule/lessons/', payload)
 

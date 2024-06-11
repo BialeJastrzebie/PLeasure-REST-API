@@ -33,7 +33,7 @@ def create_schedule(user, **params):
         room='Room1',
         start_time='9:15',
         end_time='10:15',
-        day='2024-04-04',
+        day='MON',
         user=user,
         )
     schedule.lessons.add(lesson)
@@ -100,14 +100,14 @@ class PrivateScheduleAPITest(TestCase):
                     'room': 'Room1',
                     'start_time': '9:15',
                     'end_time': '10:15',
-                    'day': '2024-04-04',
+                    'day': 'MON',
                 },
                 {
                     'name': 'Lesson2',
                     'room': 'Room2',
                     'start_time': '10:15',
                     'end_time': '11:15',
-                    'day': '2024-04-04',
+                    'day': 'MON',
                 }
             ]
         }
