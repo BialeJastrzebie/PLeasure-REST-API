@@ -10,9 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
-from pathlib import Path
 import os
-from glob import glob
+from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,16 +42,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.gis',
     'core',
     'user',
     'schedule',
     'friendship',
-    'leaflet',
     'rest_framework',
-    'rest_framework_gis',
     'rest_framework.authtoken',
     'drf_spectacular',
+    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -96,13 +93,6 @@ DATABASES = {
         "USER": os.environ.get("DB_USER"),
         "PASSWORD": os.environ.get("DB_PASS"),
     },
-    # 'gis_db': {
-    #     "ENGINE": "django.contrib.gis.db.backends.postgis",
-    #     "HOST": os.environ.get("DB_HOST"),
-    #     "NAME": os.environ.get("DB_NAME"),
-    #     "USER": os.environ.get("DB_USER"),
-    #     "PASSWORD": os.environ.get("DB_PASS"),
-    # }
 }
 
 # Password validation
@@ -121,6 +111,10 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
+]
+
+CRONJOBS = [
+    ('*/5 * * * *', 'app.cron.clear_expired_coupons'),
 ]
 
 # Internationalization
@@ -162,16 +156,3 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.2.3',
     'COMPONENT_SPLIT_REQUEST': True,
 }
-
-LEAFLET_CONFIG = {
-    'DEFAULT_CENTER': (52.22977, 21.01178),
-    'DEFAULT_ZOOM': 8,
-    'MAX_ZOOM': 18,
-    'SCALE': 'metric',
-    'ATTRIBUTION_PREFIX': 'RESTAPI PLEASURE',
-}
-
-# DATABASE_ROUTERS = ['app.map.routers.GISDBRouter']
-
-GDAL_LIBRARY_PATH = glob('/usr/lib/libgdal.so.*')[0]
-GEOS_LIBRARY_PATH = glob('/usr/lib/libgeos_c.so.*')[0]

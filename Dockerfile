@@ -13,8 +13,7 @@ EXPOSE 5432
 ARG DEV=false
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
-    apk add --update --no-cache postgresql-client jpeg-dev && \
-    apk add --no-cache geos gdal && \
+    apk add --update --no-cache postgresql-client jpeg-dev dcron && \
     apk add --update --no-cache --virtual .tmp-build-deps \
         build-base postgresql-dev musl-dev zlib zlib-dev linux-headers && \
     /py/bin/pip install -r /tmp/requirements.txt && \
@@ -25,23 +24,16 @@ RUN python -m venv /py && \
         --disabled-password \
         --no-create-home \
         django-user && \
+        echo "django-user ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \
     mkdir -p /vol/web/media && \
     mkdir -p /vol/web/static && \
     chown -R django-user:django-user /vol && \
     chmod -R 755 /vol && \
     chmod -R +x /scripts && \
-    apk add --no-cache dcron
-
-COPY cronjob /etc/cron.d/cronjob
-
-RUN chmod 0644 /etc/cron.d/cronjob
-
-RUN touch /var/log/cron.log
-
-RUN crontab /etc/cron.d/cronjob
+    chmod 755 /usr/bin/crontab
 
 ENV PATH="/scripts:/py/bin:$PATH"
 
-USER django-user
+USER root
 
 CMD ["run.sh"]

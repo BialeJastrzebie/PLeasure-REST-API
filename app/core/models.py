@@ -60,7 +60,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def remove_expired_coupons(self):
         current_time = datetime.now().time()
-        midnight = time(5, 0)  # 5:00 AM
+        midnight = time(22, 0)  # 5:00 AM
 
         if current_time > midnight:
             self.coupon_received_locations.clear()
