@@ -59,11 +59,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
 
     def remove_expired_coupons(self):
-        current_time = datetime.now().time()
-        midnight = time(22, 0)  # 5:00 AM
-
-        if current_time > midnight:
-            self.coupon_received_locations.clear()
+        self.coupon_received_locations.clear()
 
 
 class Friendship(models.Model):
